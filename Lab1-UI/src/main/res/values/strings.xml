@@ -6,4 +6,27 @@
     <string name="country_label">Country</string>
     <string name="city_label">City</string>
     <string name="next_button">Next</string>
+    <string name="address_label">Address</string>
+    <string name="continue_button">Continue</string>
+    <string name="back_button">Back</string>"
+    <string name="personal_data_title">Personal Data</string>
+    <string name="contact_data_title">Contact Data</string>
+    <string name="address_data_title">Address Data</string>
+    <string name="name_label">Name</string>
+    <string name="last_name_label">Last Name</string>
+    <string name="gender_label">Gender</string>
+    <string name="birth_date_label">Birth Date</string>
+    <string name="degree_label">Degree</string>"
+    <string name="degree_option1">Primary</string>
+    <string name="degree_option2">Secondary</string>
+    <string name="degree_option3">University</string>
+    <string name="degree_option4">Other</string>
+    <string name="date_picker_title">Select Birth Date</string>
+    <string name="street_label">Street</string>
+    <string name="number_label">Number</string>
+    <string name="department_label">Department</string>
+    <string name="zip_code_label">Zip Code</string>
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
+
 </resources>

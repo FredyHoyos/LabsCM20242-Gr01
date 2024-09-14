@@ -1,6 +1,7 @@
 package co.edu.udea.compumovil.gr01_20242.lab1
 
 import android.os.Bundle
+import android.provider.Settings.Global.getString
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -107,7 +109,7 @@ fun ContactDataScreen() {
             .padding(16.dp)
             .fillMaxWidth()
     ) {
-        Text("Información de contacto", style = MaterialTheme.typography.headlineSmall)
+        Text(text = stringResource(R.string.contact_data_title), style = MaterialTheme.typography.headlineSmall)
 
         Spacer(modifier = Modifier.height(16.dp))
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Labs20242-Gr01</string>
+    <string name="phone_label">Teléfono</string>
+    <string name="email_label">Correo Electrónico</string>
+    <string name="country_label">País</string>
+    <string name="city_label">Ciudad</string>
+    <string name="next_button">Siguiente</string>
+    <string name="address_label">Dirección</string>
+    <string name="continue_button">Continuar</string>
+    <string name="back_button">Atrás</string>
+    <string name="personal_data_title">Datos Personales</string>
+    <string name="contact_data_title">Datos de Contacto</string>
+    <string name="address_data_title">Datos de Dirección</string>
+    <string name="name_label">Nombre</string>
+    <string name="last_name_label">Apellido</string>
+    <string name="gender_label">Género</string>
+    <string name="birth_date_label">Fecha de Nacimiento</string>
+    <string name="degree_label">Escolaridad</string>
+    <string name="degree_option1">Primaria</string>
+    <string name="degree_option2">Secundaria</string>
+    <string name="degree_option3">Universidad</string>
+    <string name="degree_option4">Otro</string>
+    <string name="date_picker_title">Seleccionar Fecha de Nacimiento</string>
+    <string name="street_label">Calle</string>
+    <string name="number_label">Número</string>
+    <string name="department_label">Departamento</string>
+    <string name="zip_code_label">Código Postal</string>
+    <string name="save_button">Guardar</string>
+    <string name="cancel_button">Cancelar</string>
+
+</resources>

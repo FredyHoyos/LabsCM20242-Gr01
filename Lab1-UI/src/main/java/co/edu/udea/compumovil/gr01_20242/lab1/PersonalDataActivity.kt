@@ -78,6 +78,16 @@ class PersonalDataActivity : ComponentActivity() {
                 Column {
                     Titulo()
                     Cuerpo()
+                    /*val orientation = getScreenOrientation(this) // 'this' refers to your Context
+
+                    when (orientation) {
+                        Configuration.ORIENTATION_LANDSCAPE -> {
+                            // Handle landscape orientation
+                        }
+                        Configuration.ORIENTATION_PORTRAIT -> {
+                            // Handle portrait orientation
+                        }
+                    }*/
                 }
             }
         }
@@ -99,7 +109,6 @@ fun Titulo() {
 
 @Composable
 fun Cuerpo() {
-    // rememberSaveable
     var nombre by rememberSaveable { mutableStateOf("") }
     var apellido by rememberSaveable { mutableStateOf("") }
     var sexo by rememberSaveable { mutableStateOf("Hombre") }
@@ -107,188 +116,130 @@ fun Cuerpo() {
     var selectedOption by rememberSaveable { mutableStateOf<String?>(null) }
     val context = LocalContext.current
 
-
-    BoxWithConstraints() {
-        // Comprobar si la anchura disponible es mayor que la altura
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         val isLandscape = maxWidth > maxHeight
 
-        // Disposición en función de la orientación
-        if (isLandscape) {
-            // En modo paisaje, colocar los componentes en fila
+        // Centrar todos los componentes
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp) // Reducimos el espacio entre los elementos
+        ) {
+            // Nombre y Apellido en filas separadas
             Row(
-                modifier = Modifier.fillMaxWidth(), // que la fila ocupe todo el ancho disponible
-                verticalAlignment = Alignment.CenterVertically // Alinea los elementos verticalmente en el centro
-            ){
-                Image(painter = painterResource(id = R.drawable.usuario),
+                modifier = Modifier
+                    .fillMaxWidth(0.8f), // Limitamos el ancho en horizontal
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.usuario),
                     contentDescription = "Imagen nombre",
-                    modifier = Modifier.size(60.dp).padding(vertical = 8.dp))
+                    modifier = Modifier.size(50.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
                     value = nombre,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done,
-                        capitalization = KeyboardCapitalization.Sentences,
-                        autoCorrect = false
-                    ),
-                    onValueChange = {
-                        if(it.length < 50)
-                            nombre = it
-                    },
+                    onValueChange = { if (it.length < 50) nombre = it },
                     label = { Text("Escriba su nombre") },
+                    modifier = Modifier.weight(1f)
                 )
-                Image(painter = painterResource(R.drawable.mas),
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.mas),
                     contentDescription = "Imagen apellido",
-                    modifier = Modifier.size(60.dp).padding(vertical = 8.dp))
+                    modifier = Modifier.size(50.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
                     value = apellido,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done,
-                        capitalization = KeyboardCapitalization.Sentences,
-                        autoCorrect = false
-                    ),
-                    onValueChange = {
-                        if(it.length < 50)
-                            apellido = it
-                    },
+                    onValueChange = { if (it.length < 50) apellido = it },
                     label = { Text("Escriba su apellido") },
+                    modifier = Modifier.weight(1f)
                 )
             }
-        } else {
-            // En modo retrato, colocar los componentes en columna
-            Column{
-                Row(
-                    modifier = Modifier.fillMaxWidth(), // que la fila ocupe todo el ancho disponible
-                    verticalAlignment = Alignment.CenterVertically // Alinea los elementos verticalmente en el centro
-                ){
-                    Image(painter = painterResource(id = R.drawable.usuario),
-                        contentDescription = "Imagen nombre",
-                        modifier = Modifier.size(60.dp).padding(vertical = 8.dp))
-                    OutlinedTextField(
-                        value = nombre,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done,
-                            capitalization = KeyboardCapitalization.Sentences,
-                            autoCorrect = false
-                        ),
-                        onValueChange = {
-                            if(it.length < 50)
-                                nombre = it
-                        },
-                        label = { Text("Escriba su nombre") },
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp)) // Espacio entre los componentes
-                Row(
-                    modifier = Modifier.fillMaxWidth(), // que la fila ocupe todo el ancho disponible
-                    verticalAlignment = Alignment.CenterVertically // Alinea los elementos verticalmente en el centro
-                ){
-                    Image(painter = painterResource(R.drawable.mas),
-                        contentDescription = "Imagen apellido",
-                        modifier = Modifier.size(60.dp).padding(vertical = 8.dp))
-                    OutlinedTextField(
-                        value = apellido,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done,
-                            capitalization = KeyboardCapitalization.Sentences,
-                            autoCorrect = false
-                        ),
-                        onValueChange = {
-                            if(it.length < 50)
-                                apellido = it
-                        },
-                        label = { Text("Escriba su apellido") },
-                    )
-                }
+
+            // Selección de sexo con RadioButton
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.dos),
+                    contentDescription = "Imagen sexo",
+                    modifier = Modifier.size(50.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                SeleccionSexo(
+                    onSelectionChange = { selected -> sexo = selected },
+                    modifier = Modifier.weight(1f)
+                )
             }
-        }
-    }
 
-
-
-
-    Column (
-        modifier = Modifier.padding(10.dp).fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(), //que la fila ocupe todo el ancho disponible
-            verticalAlignment = Alignment.CenterVertically // Alinea los elementos verticalmente en el centro
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.dos),
-                contentDescription = "Imagen sexo",
-                modifier = Modifier.size(60.dp).padding(vertical = 8.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp)) // Añade un espacio entre la imagen y el texto
-            Text("Sexo: ")
-
-            SeleccionSexo(
-                onSelectionChange = { selected ->
-                    sexo = selected
-                }
-            )
-
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(), //que la fila ocupe todo el ancho disponible
-            verticalAlignment = Alignment.CenterVertically // Alinea los elementos verticalmente en el centro
-        ){
-            Image(painter = painterResource(R.drawable.calendario),
-                contentDescription = "Imagen de nacimiento",
-                modifier = Modifier.size(60.dp).padding(vertical = 8.dp))
-            Text("Fecha de nacimiento: ")
-
-            DatePickerModal(
-                onDateSelected = { date ->
-                    fecha = date
-                }
-            )
-
-
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(), //que la fila ocupe todo el ancho disponible
-            verticalAlignment = Alignment.CenterVertically // Alinea los elementos verticalmente en el centro
-        ){
-            Image(painter = painterResource(R.drawable.gorro),
-                contentDescription = "Imagen escolaridad",
-                modifier = Modifier.size(60.dp).padding(vertical = 8.dp))
-
-            ListaGrado(
-                onOptionSelected = { option ->
-                    selectedOption = option
-                }
-            )
-
-        }
-
-        Button(modifier = Modifier.align(Alignment.End),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
-            onClick = {
-
-                if (nombre.isEmpty() || apellido.isEmpty() || fecha.equals("")){
-                    Log.d(
-                        "Datos",
-                        "Llena todos los campos obligatorios por favor"
-
-                    )
-                }else{
-                    Log.d(
-                        "Datos",
-                        "Información personal -> Nombre : $nombre, Apellido $apellido, Sexo: $sexo, Fecha nacimiento: $fecha, Grado: $selectedOption"
-
-                    )
-                    val intent = Intent(context, ContactDataActivity::class.java)
-                    context.startActivity(intent)
-
-                }
+            // Fecha de nacimiento con DatePicker
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.calendario),
+                    contentDescription = "Imagen de nacimiento",
+                    modifier = Modifier.size(50.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                DatePickerModal(onDateSelected = { date -> fecha = date })
             }
-        ) {
-            Text("Siguiente")
+
+            // Grado de escolaridad con Dropdown
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.gorro),
+                    contentDescription = "Imagen escolaridad",
+                    modifier = Modifier.size(50.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                ListaGrado(
+                    onOptionSelected = { option -> selectedOption = option }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón "Siguiente"
+            Button(
+                onClick = {
+                    if (nombre.isEmpty() || apellido.isEmpty() || fecha.isNullOrEmpty()) {
+                        Log.d("Datos", "Llena todos los campos obligatorios por favor")
+                    } else {
+                        Log.d(
+                            "Datos",
+                            "Información personal -> Nombre: $nombre, Apellido: $apellido, Sexo: $sexo, Fecha: $fecha, Grado: $selectedOption"
+                        )
+                        val intent = Intent(context, ContactDataActivity::class.java)
+                        context.startActivity(intent)
+                    }
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text("Siguiente")
+            }
         }
     }
 }
@@ -296,41 +247,37 @@ fun Cuerpo() {
 @Composable
 fun SeleccionSexo(
     modifier: Modifier = Modifier,
-    onSelectionChange: (String) -> Unit // Callback para informar al componente padre
+    onSelectionChange: (String) -> Unit
 ) {
-    val sexo = listOf("Hombre", "Mujer")
-    var seleccion by rememberSaveable { mutableStateOf(sexo.first()) }
+    val opcionesSexo = listOf("Hombre", "Mujer")
+    var seleccion by rememberSaveable { mutableStateOf(opcionesSexo.first()) }
 
-    // Usar Row para colocar los botones de radio horizontalmente
     Row(
-        modifier = modifier
-            .padding(5.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(5.dp) // Espaciado entre los elementos
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        sexo.forEach { item ->
+        opcionesSexo.forEach { opcion ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.clickable {
-                    seleccion = item
-                    onSelectionChange(item) // Notificar al componente padre sobre la selección
+                    seleccion = opcion
+                    onSelectionChange(opcion)
                 }
             ) {
                 RadioButton(
-                    selected = (seleccion == item),
+                    selected = (seleccion == opcion),
                     onClick = {
-                        seleccion = item
-                        onSelectionChange(item) // Notificar al componente padre sobre la selección
+                        seleccion = opcion
+                        onSelectionChange(opcion)
                     }
                 )
-                Text(
-                    text = item,
-                    modifier = Modifier.padding(start = 1.dp)
-                )
+                Text(text = opcion)
+                Spacer(modifier = Modifier.width(8.dp))
             }
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -350,8 +297,7 @@ fun ListaGrado(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
         modifier = modifier
-            .padding(16.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(0.8f) // Limitamos el ancho al 80% del tamaño disponible
     ) {
         // Botón que muestra la opción seleccionada o el texto predeterminado
         TextField(
@@ -431,7 +377,8 @@ fun DatePickerModal(
     }
 
     Box(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center // Centra el contenido
     ) {
         // Campo de texto que muestra la fecha seleccionada
         OutlinedTextField(
@@ -448,8 +395,7 @@ fun DatePickerModal(
                 }
             },
             modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
+                .fillMaxWidth(0.8f) // Limita el ancho al 80% del espacio disponible
         )
 
         // Mostrar el diálogo modal cuando se hace clic en el campo de fecha
@@ -459,6 +405,7 @@ fun DatePickerModal(
                     modifier = Modifier
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(16.dp)
+                        .fillMaxWidth(0.9f) // Limita el ancho del diálogo
                 ) {
                     DatePicker(
                         state = datePickerState,
@@ -469,4 +416,5 @@ fun DatePickerModal(
         }
     }
 }
+
 
