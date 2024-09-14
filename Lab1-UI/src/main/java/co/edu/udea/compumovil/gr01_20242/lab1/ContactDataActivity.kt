@@ -22,7 +22,6 @@ import androidx.compose.material3.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Query
 
 // --- Retrofit Configuration ---
 
@@ -39,10 +38,10 @@ data class Geoname(
 interface GeonamesApiService {
     @GET("searchJSON")
     suspend fun getCities(
-        @Query("country") country: String = "CO",
-        @Query("featureClass") featureClass: String = "P", // P para poblaciones
-        @Query("maxRows") maxRows: Int = 1000,
-        @Query("username") username: String = "daniel22" // Tu nombre de usuario de Geonames
+        @retrofit2.http.Query("country") country: String = "CO",
+        @retrofit2.http.Query("featureClass") featureClass: String = "P", // P para poblaciones
+        @retrofit2.http.Query("maxRows") maxRows: Int = 1000,
+        @retrofit2.http.Query("username") username: String = "daniel22" // Tu nombre de usuario de Geonames
     ): GeonamesResponse
 }
 

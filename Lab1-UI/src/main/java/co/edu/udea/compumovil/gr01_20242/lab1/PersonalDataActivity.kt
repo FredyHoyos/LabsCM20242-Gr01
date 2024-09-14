@@ -1,5 +1,6 @@
 package co.edu.udea.compumovil.gr01_20242.lab1
 
+import co.edu.udea.compumovil.gr01_20242.lab1.ContactDataActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -44,7 +45,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -64,7 +65,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class MainActivity : ComponentActivity() {
+class PersonalDataActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -100,6 +101,7 @@ fun Cuerpo() {
     var sexo by rememberSaveable { mutableStateOf("Hombre") }
     var fecha by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedOption by rememberSaveable { mutableStateOf<String?>(null) }
+    val context = LocalContext.current
 
 
     BoxWithConstraints() {
