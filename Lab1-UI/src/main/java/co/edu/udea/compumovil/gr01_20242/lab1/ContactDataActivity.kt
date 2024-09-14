@@ -1,14 +1,15 @@
 package co.edu.udea.compumovil.gr01_20242.lab1
 
+import android.os.Bundle
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -18,7 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -26,13 +26,8 @@ import retrofit2.http.GET
 // --- Retrofit Configuration ---
 
 // Data Classes para la respuesta de Geonames
-data class GeonamesResponse(
-    val geonames: List<Geoname>
-)
-
-data class Geoname(
-    val name: String
-)
+data class GeonamesResponse(val geonames: List<Geoname>)
+data class Geoname(val name: String)
 
 // Interfaz de la API de Geonames
 interface GeonamesApiService {
@@ -58,9 +53,21 @@ object RetrofitClient {
     }
 }
 
+// Definición de la actividad ContactDataActivity como clase
+class ContactDataActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                ContactDataScreen() // Llama a la función @Composable que define la UI
+            }
+        }
+    }
+}
+
 @Composable
-fun ContactDataActivity() {
-    // Recordando el estado incluso en cambios de configuración
+fun ContactDataScreen() {
+    // Estado para los campos de entrada
     var phone by rememberSaveable { mutableStateOf("") }
     var address by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -72,14 +79,14 @@ fun ContactDataActivity() {
         "Ecuador", "Paraguay", "Peru", "Uruguay", "Venezuela"
     )
 
-    // Estado para almacenar las ciudades obtenidas de la API
+    // Estado para las ciudades obtenidas de la API
     var citiesFromApi by remember { mutableStateOf(listOf<String>()) }
     var isLoading by remember { mutableStateOf(false) }
     var apiError by remember { mutableStateOf<String?>(null) }
 
     val coroutineScope = rememberCoroutineScope()
 
-    // Llamar a la API para obtener las ciudades de Colombia
+    // Llamada a la API para obtener ciudades
     LaunchedEffect(Unit) {
         isLoading = true
         try {
@@ -95,9 +102,10 @@ fun ContactDataActivity() {
         isLoading = false
     }
 
-    Column(modifier = Modifier
-        .padding(16.dp)
-        .fillMaxWidth()
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
     ) {
         Text("Información de contacto", style = MaterialTheme.typography.headlineSmall)
 
@@ -172,10 +180,8 @@ fun ContactDataActivity() {
         Button(
             onClick = {
                 if (phone.isEmpty() || email.isEmpty() || country.isEmpty()) {
-                    // Manejar los errores de validación
                     Log.d("ContactData", "Faltan campos por completar")
                 } else {
-                    // Log de la información del contacto
                     Log.d(
                         "ContactData",
                         "Información de contacto: Teléfono: $phone, Dirección: $address, Email: $email, País: $country, Ciudad: $city"
@@ -209,7 +215,7 @@ fun ContactField(
         )
         OutlinedTextField(
             value = value,
-            onValueChange = { newText -> onValueChange(newText) },
+            onValueChange = onValueChange,
             label = { Text(label) },
             keyboardOptions = keyboardOptions,
             isError = isError,
@@ -258,7 +264,6 @@ fun AutoCompleteTextField(
         }
 
         if (showSuggestions && filteredSuggestions.isNotEmpty()) {
-            // Limitar la altura de las sugerencias
             LazyColumn(
                 modifier = Modifier
                     .heightIn(max = 150.dp)
@@ -280,6 +285,7 @@ fun AutoCompleteTextField(
         }
     }
 }
+
 
 
 
