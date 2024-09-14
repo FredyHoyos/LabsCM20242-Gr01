@@ -1,6 +1,5 @@
 package co.edu.udea.compumovil.gr01_20242.lab1
 
-import co.edu.udea.compumovil.gr01_20242.lab1.ContactDataActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -64,6 +63,8 @@ import co.edu.udea.compumovil.gr01_20242.lab1.ui.theme.Labs20242Gr01Theme
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import android.content.Intent
+
 
 class PersonalDataActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -277,6 +278,9 @@ fun Cuerpo() {
                         "Información personal -> Nombre : $nombre, Apellido $apellido, Sexo: $sexo, Fecha nacimiento: $fecha, Grado: $selectedOption"
 
                     )
+                    val intent = Intent(context, ContactDataActivity::class.java)
+                    context.startActivity(intent)
+
                 }
             }
         ) {
