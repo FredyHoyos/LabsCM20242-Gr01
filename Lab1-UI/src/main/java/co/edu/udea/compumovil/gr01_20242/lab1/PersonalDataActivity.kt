@@ -64,6 +64,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import android.content.Intent
+import android.content.Context
+import android.content.res.Configuration
+import androidx.compose.ui.window.Dialog
 
 
 class PersonalDataActivity : ComponentActivity() {
@@ -239,11 +242,12 @@ fun Cuerpo() {
                 modifier = Modifier.size(60.dp).padding(vertical = 8.dp))
             Text("Fecha de nacimiento: ")
 
-            DatePickerDocked(
+            DatePickerModal(
                 onDateSelected = { date ->
                     fecha = date
                 }
             )
+
 
         }
         Row(
@@ -401,41 +405,42 @@ fun GreetingPreview() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerDocked(
+fun DatePickerModal(
     modifier: Modifier = Modifier,
     onDateSelected: (String) -> Unit // Callback para informar al componente padre
 ) {
-    val showDatePicker = rememberSaveable { mutableStateOf(false) }
+    // Controlar la visibilidad del DatePicker en un diálogo
+    val showDialog = rememberSaveable { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
     val formatter = rememberSaveable { SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()) }
 
+    // Convertir la fecha seleccionada en formato legible
     val selectedDate = datePickerState.selectedDateMillis?.let {
         formatter.format(Date(it))
     } ?: ""
 
-    // Notify the parent about the date selection
+    // Efecto para actualizar la fecha seleccionada y cerrar el diálogo
     LaunchedEffect(datePickerState.selectedDateMillis) {
-        val newDate = if (datePickerState.selectedDateMillis != null) {
-            formatter.format(Date(datePickerState.selectedDateMillis!!))
-        } else {
-            ""
-        }
-        onDateSelected(newDate) // Call the callback with the new date
+        val newDate = datePickerState.selectedDateMillis?.let {
+            formatter.format(Date(it))
+        } ?: ""
+        onDateSelected(newDate)
         if (datePickerState.selectedDateMillis != null) {
-            showDatePicker.value = false
+            showDialog.value = false // Cierra el diálogo después de seleccionar una fecha
         }
     }
 
     Box(
         modifier = modifier.fillMaxWidth()
     ) {
+        // Campo de texto que muestra la fecha seleccionada
         OutlinedTextField(
             value = selectedDate,
-            onValueChange = { /* No-op, text field is read-only */ },
+            onValueChange = { /* No-op, el campo es solo de lectura */ },
             label = { Text("Fecha") },
             readOnly = true,
             trailingIcon = {
-                IconButton(onClick = { showDatePicker.value = !showDatePicker.value }) {
+                IconButton(onClick = { showDialog.value = true }) {
                     Icon(
                         imageVector = Icons.Default.DateRange,
                         contentDescription = "Fecha"
@@ -447,16 +452,11 @@ fun DatePickerDocked(
                 .height(64.dp)
         )
 
-        if (showDatePicker.value) {
-            Popup(
-                onDismissRequest = { showDatePicker.value = false },
-                alignment = Alignment.TopStart
-            ) {
+        // Mostrar el diálogo modal cuando se hace clic en el campo de fecha
+        if (showDialog.value) {
+            Dialog(onDismissRequest = { showDialog.value = false }) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .offset(y = 64.dp)
-                        .shadow(elevation = 4.dp)
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(16.dp)
                 ) {
@@ -469,3 +469,4 @@ fun DatePickerDocked(
         }
     }
 }
+
