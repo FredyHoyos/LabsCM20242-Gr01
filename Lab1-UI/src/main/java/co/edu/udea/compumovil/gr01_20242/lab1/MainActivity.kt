@@ -52,8 +52,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Labs20242Gr01Theme {
-                Titulo()
-                Cuerpo()
+                //Titulo()
+                //Cuerpo()
+                ContactDataActivity()
             }
         }
     }

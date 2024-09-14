@@ -1,3 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Labs20242-Gr01</string>
+    <string name="phone_label">Phone</string>
+    <string name="email_label">Email</string>
+    <string name="country_label">Country</string>
+    <string name="city_label">City</string>
+    <string name="next_button">Next</string>
 </resources>
