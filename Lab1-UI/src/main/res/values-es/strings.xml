@@ -28,5 +28,29 @@
     <string name="zip_code_label">Código Postal</string>
     <string name="save_button">Guardar</string>
     <string name="cancel_button">Cancelar</string>
+    <string name="last_name">Apellido</string>
+    <string name="image_name">Imagen de Nombre</string>
+    <string name="name">Nombre</string>
+    <string name="image_last_name">Imagen de Apellido</string>
+    <string name="image_sex">Imagen de sexo</string>
+    <string name="image_birth">Imagen de fecha de nacimiento</string>
+    <string name="image_schooling">Imagen de escolaridad</string>
+    <string name="fill_required_fields">Porfavor llene los campos requeridos</string>
+    <string name="personal_information">Información Personal</string>
+    <string name="date_of_birth">Fecha de cumpleaños</string>
+    <string name="date_of_birth_icon">Icono de fecha de cumpleaños</string>
+    <string name="next">Siguiente</string>
+    <string name="man">Hombre</string>
+    <string name="woman">Mujer</string>
+    <string name="primary">Primaria</string>
+    <string name="secondary">Segundaria</string>
+    <string name="university">Universitaria</string>
+    <string name="other">Otra</string>
+    <string name="select_education_level">Seleccione el nivel de educación</string>
+    <string name="dropdown_icon">Icono del menú desplegable</string>
+    <string name="sex">Sexo</string>
+    <string name="degree">Grado</string>
+    <string name="contact_data">Datos de Contacto</string>
+
 
 </resources>
