@@ -8,86 +8,37 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
 import co.edu.udea.compumovil.gr01_20242.lab1.ui.theme.Labs20242Gr01Theme
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import android.content.Intent
-import android.content.Context
-import android.content.res.Configuration
+import androidx.compose.runtime.saveable.rememberSaveable
+import java.text.SimpleDateFormat
+import java.util.*
 import androidx.compose.ui.window.Dialog
-
 
 class PersonalDataActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge() // Habilitar el modo de pantalla completa sin bordes
         setContent {
             Labs20242Gr01Theme {
                 Column {
-                    Titulo()
-                    Cuerpo()
-                    /*val orientation = getScreenOrientation(this) // 'this' refers to your Context
-
-                    when (orientation) {
-                        Configuration.ORIENTATION_LANDSCAPE -> {
-                            // Handle landscape orientation
-                        }
-                        Configuration.ORIENTATION_PORTRAIT -> {
-                            // Handle portrait orientation
-                        }
-                    }*/
+                    Titulo() // Función para mostrar la barra de título
+                    Cuerpo() // Función para mostrar el cuerpo principal del formulario
                 }
             }
         }
@@ -97,148 +48,144 @@ class PersonalDataActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Titulo() {
+    // TopAppBar es la barra superior, en este caso con un fondo azul y un título
     TopAppBar(
-        title = { Text("Información Personal")},
+        title = { Text(stringResource(id = R.string.personal_data_title)) }, // Texto del título en la barra superior reemplazado por `stringResource()`
         modifier = Modifier.background(Color.Blue, RectangleShape),
-        // Cambia a Color.Blue para fondo azul
     )
-
 }
-
-
 
 @Composable
 fun Cuerpo() {
-    var nombre by rememberSaveable { mutableStateOf("") }
-    var apellido by rememberSaveable { mutableStateOf("") }
-    var sexo by rememberSaveable { mutableStateOf("Hombre") }
-    var fecha by rememberSaveable { mutableStateOf<String?>(null) }
-    var selectedOption by rememberSaveable { mutableStateOf<String?>(null) }
-    val context = LocalContext.current
-
+    var name by rememberSaveable { mutableStateOf("") } // Variable para almacenar el nombre
+    var last_name by rememberSaveable { mutableStateOf("") } // Variable para almacenar el apellido
+    var sex by rememberSaveable { mutableStateOf("Man") } // Variable para almacenar el sexo, valor inicial "Man"
+    var select_date by rememberSaveable { mutableStateOf<String?>(null) } // Variable para almacenar la fecha de nacimiento
+    var selectedOption by rememberSaveable { mutableStateOf<String?>(null) } // Variable para almacenar el grado académico seleccionado
+    val context = LocalContext.current // Contexto para iniciar nuevas actividades
+    val fillRequiredFields = stringResource(id = R.string.fill_required_fields) // Mensaje de advertencia
+    val personalInformation = stringResource(id = R.string.personal_information)
+    val log_name= stringResource(id = R.string.name)// Log del nombre
+    val log_last_name=stringResource(id = R.string.last_name) // Log del apellido
+    val log_sex=stringResource(id = R.string.sex) // Log del sexo
+    val log_date_of_birth=stringResource(id = R.string.date_of_birth) // Log de la fecha de nacimiento
+    val log_degree=stringResource(id = R.string.degree) // Log del grado académico
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        val isLandscape = maxWidth > maxHeight
+        val isLandscape = maxWidth > maxHeight // Verifica si la orientación es horizontal
 
-        // Centrar todos los componentes
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp) // Reducimos el espacio entre los elementos
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Nombre y Apellido en filas separadas
+            // Fila para el campo de "Name"
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(0.8f), // Limitamos el ancho en horizontal
+                    .fillMaxWidth(0.8f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.usuario),
-                    contentDescription = "Imagen nombre",
+                    painter = painterResource(id = R.drawable.usuario), // Imagen de usuario
+                    contentDescription = stringResource(id = R.string.image_name), // Descripción accesible usando `stringResource()`
                     modifier = Modifier.size(50.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
-                    value = nombre,
-                    onValueChange = { if (it.length < 50) nombre = it },
-                    label = { Text("Escriba su nombre") },
+                    value = name,
+                    onValueChange = { if (it.length < 50) name = it }, // Actualiza el valor del nombre
+                    label = { Text(stringResource(id = R.string.name)) }, // Etiqueta del campo usando `stringResource()`
                     modifier = Modifier.weight(1f)
                 )
             }
 
+            // Fila para el campo de "Last Name"
             Row(
                 modifier = Modifier
                     .fillMaxWidth(0.8f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.mas),
-                    contentDescription = "Imagen apellido",
+                    painter = painterResource(id = R.drawable.mas), // Imagen de apellido
+                    contentDescription = stringResource(id = R.string.image_last_name), // Descripción accesible usando `stringResource()`
                     modifier = Modifier.size(50.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
-                    value = apellido,
-                    onValueChange = { if (it.length < 50) apellido = it },
-                    label = { Text("Escriba su apellido") },
+                    value = last_name,
+                    onValueChange = { if (it.length < 50) last_name = it }, // Actualiza el valor del apellido
+                    label = { Text(stringResource(id = R.string.last_name)) }, // Etiqueta del campo usando `stringResource()`
                     modifier = Modifier.weight(1f)
                 )
             }
 
-            // Selección de sexo con RadioButton
+            // Fila para la selección de "Sex"
             Row(
                 modifier = Modifier
                     .fillMaxWidth(0.8f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.dos),
-                    contentDescription = "Imagen sexo",
+                    painter = painterResource(id = R.drawable.dos), // Imagen para el sexo
+                    contentDescription = stringResource(id = R.string.image_sex), // Descripción accesible usando `stringResource()`
                     modifier = Modifier.size(50.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                SeleccionSexo(
-                    onSelectionChange = { selected -> sexo = selected },
-                    modifier = Modifier.weight(1f)
-                )
+                SeleccionSexo(onSelectionChange = { selected -> sex = selected }) // Componente para la selección de sexo
             }
 
-            // Fecha de nacimiento con DatePicker
+            // Fila para la selección de "Date of Birth"
             Row(
                 modifier = Modifier
                     .fillMaxWidth(0.8f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.calendario),
-                    contentDescription = "Imagen de nacimiento",
+                    painter = painterResource(id = R.drawable.calendario), // Imagen de calendario
+                    contentDescription = stringResource(id = R.string.image_birth), // Descripción accesible usando `stringResource()`
                     modifier = Modifier.size(50.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                DatePickerModal(onDateSelected = { date -> fecha = date })
+                DatePickerModal(onDateSelected = { date -> select_date = date }) // Componente para seleccionar la fecha de nacimiento
             }
 
-            // Grado de escolaridad con Dropdown
+            // Fila para la selección de "Education Level"
             Row(
                 modifier = Modifier
                     .fillMaxWidth(0.8f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.gorro),
-                    contentDescription = "Imagen escolaridad",
+                    painter = painterResource(id = R.drawable.gorro), // Imagen de gorro académico
+                    contentDescription = stringResource(id = R.string.image_schooling), // Descripción accesible usando `stringResource()`
                     modifier = Modifier.size(50.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                ListaGrado(
-                    onOptionSelected = { option -> selectedOption = option }
-                )
+                ListaGrado(onOptionSelected = { option -> selectedOption = option }) // Componente para seleccionar el grado académico
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón "Siguiente"
+            // Botón "Next" que valida los campos antes de continuar
             Button(
                 onClick = {
-                    if (nombre.isEmpty() || apellido.isEmpty() || fecha.isNullOrEmpty()) {
-                        Log.d("Datos", "Llena todos los campos obligatorios por favor")
+                    if (name.isEmpty() || last_name.isEmpty() || select_date.isNullOrEmpty()) {
+                        Log.d("Data", fillRequiredFields) // Mensaje de advertencia si los campos están vacíos usando `stringResource()`
                     } else {
-                        Log.d(
-                            "Datos",
-                            "Información personal -> Nombre: $nombre, Apellido: $apellido, Sexo: $sexo, Fecha: $fecha, Grado: $selectedOption"
-                        )
-                        val intent = Intent(context, ContactDataActivity::class.java)
+                        val logMessage = "$personalInformation -> $log_name: $name, $log_last_name: $last_name, $log_sex: $sex, $log_date_of_birth: $select_date, $log_degree: $selectedOption"
+                        Log.d("Data", logMessage)
+                        val intent = Intent(context, ContactDataActivity::class.java) // Intenta ir a la siguiente actividad
                         context.startActivity(intent)
                     }
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text("Siguiente")
+                Text(stringResource(id = R.string.next)) // Texto en el botón usando `stringResource()`
             }
         }
     }
@@ -249,8 +196,9 @@ fun SeleccionSexo(
     modifier: Modifier = Modifier,
     onSelectionChange: (String) -> Unit
 ) {
-    val opcionesSexo = listOf("Hombre", "Mujer")
-    var seleccion by rememberSaveable { mutableStateOf(opcionesSexo.first()) }
+    // Lista de opciones de sexo
+    val opcionesSexo = listOf(stringResource(id = R.string.man), stringResource(id = R.string.woman)) // Texto de opciones usando `stringResource()`
+    var seleccion by rememberSaveable { mutableStateOf(opcionesSexo.first()) } // Opción seleccionada inicialmente "Man"
 
     Row(
         modifier = modifier,
@@ -261,60 +209,57 @@ fun SeleccionSexo(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.clickable {
                     seleccion = opcion
-                    onSelectionChange(opcion)
+                    onSelectionChange(opcion) // Cambia la selección cuando se hace clic
                 }
             ) {
                 RadioButton(
-                    selected = (seleccion == opcion),
+                    selected = (seleccion == opcion), // Verifica si la opción es seleccionada
                     onClick = {
                         seleccion = opcion
-                        onSelectionChange(opcion)
+                        onSelectionChange(opcion) // Cambia la opción seleccionada
                     }
                 )
-                Text(text = opcion)
+                Text(text = opcion) // Muestra el texto de la opción
                 Spacer(modifier = Modifier.width(8.dp))
             }
         }
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListaGrado(
     modifier: Modifier = Modifier,
-    onOptionSelected: (String?) -> Unit // Callback para informar al componente padre
+    onOptionSelected: (String?) -> Unit
 ) {
-    // Opciones del spinner
-    val options = listOf("Primaria", "Secundaria", "Universitaria", "Otro")
-    // Estado para mostrar u ocultar el menú desplegable
+    val options = listOf(
+        stringResource(id = R.string.primary),
+        stringResource(id = R.string.secondary),
+        stringResource(id = R.string.university),
+        stringResource(id = R.string.other)
+    )
     var expanded by rememberSaveable { mutableStateOf(false) }
-    // Estado para la opción seleccionada
-    var selectedOption by rememberSaveable { mutableStateOf<String?>(null) } // Inicialmente nulo
+    var selectedOption by rememberSaveable { mutableStateOf<String?>(null) }
 
-    // Contenedor del spinner
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
-        modifier = modifier
-            .fillMaxWidth(0.8f) // Limitamos el ancho al 80% del tamaño disponible
+        modifier = modifier.fillMaxWidth(0.8f)
     ) {
-        // Botón que muestra la opción seleccionada o el texto predeterminado
         TextField(
             readOnly = true,
-            value = selectedOption ?: "Grado de escolaridad", // Texto predeterminado si no hay selección
+            value = selectedOption ?: stringResource(id = R.string.select_education_level),
             onValueChange = {},
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Filled.ArrowDropDown,
-                    contentDescription = "Dropdown Icon"
+                    contentDescription = null
                 )
             },
             modifier = Modifier
-                .menuAnchor() // Para alinear el menú desplegable con el botón
-                .clickable { expanded = true } // Abre el menú cuando se hace clic en el TextField
+                .menuAnchor()
+                .clickable { expanded = true }
         )
-        // Menú desplegable
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
@@ -325,7 +270,7 @@ fun ListaGrado(
                     onClick = {
                         selectedOption = option
                         expanded = false
-                        onOptionSelected(option) // Notificar al componente padre sobre la selección
+                        onOptionSelected(option)
                     }
                 )
             }
@@ -334,87 +279,71 @@ fun ListaGrado(
 }
 
 
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Labs20242Gr01Theme {
-        Column {
-            Titulo()
-            Cuerpo()
-
-        }
-
-    }
-}
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerModal(
     modifier: Modifier = Modifier,
-    onDateSelected: (String) -> Unit // Callback para informar al componente padre
+    onDateSelected: (String) -> Unit
 ) {
-    // Controlar la visibilidad del DatePicker en un diálogo
-    val showDialog = rememberSaveable { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState()
-    val formatter = rememberSaveable { SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()) }
+    // Modal para seleccionar la fecha de nacimiento usando un DatePicker
+    val showDialog =
+        rememberSaveable { mutableStateOf(false) } // Controla si el diálogo está visible
+    val datePickerState = rememberDatePickerState() // Estado del DatePicker
+    val formatter = rememberSaveable {
+        SimpleDateFormat(
+            "MM/dd/yyyy",
+            Locale.getDefault()
+        )
+    } // Formato de la fecha
 
-    // Convertir la fecha seleccionada en formato legible
     val selectedDate = datePickerState.selectedDateMillis?.let {
-        formatter.format(Date(it))
+        formatter.format(Date(it)) // Formatea la fecha seleccionada
     } ?: ""
 
-    // Efecto para actualizar la fecha seleccionada y cerrar el diálogo
     LaunchedEffect(datePickerState.selectedDateMillis) {
         val newDate = datePickerState.selectedDateMillis?.let {
-            formatter.format(Date(it))
+            formatter.format(Date(it)) // Actualiza la fecha cuando el usuario selecciona una nueva fecha
         } ?: ""
-        onDateSelected(newDate)
+        onDateSelected(newDate) // Llama a la función callback con la fecha seleccionada
         if (datePickerState.selectedDateMillis != null) {
-            showDialog.value = false // Cierra el diálogo después de seleccionar una fecha
+            showDialog.value = false // Cierra el diálogo si se seleccionó una fecha
         }
     }
 
     Box(
         modifier = modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center // Centra el contenido
+        contentAlignment = Alignment.Center
     ) {
-        // Campo de texto que muestra la fecha seleccionada
         OutlinedTextField(
-            value = selectedDate,
-            onValueChange = { /* No-op, el campo es solo de lectura */ },
-            label = { Text("Fecha") },
+            value = selectedDate, // Muestra la fecha seleccionada
+            onValueChange = { },
+            label = { Text(stringResource(id = R.string.date_of_birth)) }, // Etiqueta del campo usando `stringResource()`
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = { showDialog.value = true }) {
                     Icon(
-                        imageVector = Icons.Default.DateRange,
-                        contentDescription = "Fecha"
+                        imageVector = Icons.Default.DateRange, // Icono de calendario
+                        contentDescription = stringResource(id = R.string.date_of_birth_icon) // Descripción accesible usando `stringResource()`
                     )
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth(0.8f) // Limita el ancho al 80% del espacio disponible
+            modifier = Modifier.fillMaxWidth(0.8f)
         )
-
-        // Mostrar el diálogo modal cuando se hace clic en el campo de fecha
         if (showDialog.value) {
             Dialog(onDismissRequest = { showDialog.value = false }) {
                 Box(
                     modifier = Modifier
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(16.dp)
-                        .fillMaxWidth(0.9f) // Limita el ancho del diálogo
+                        .fillMaxWidth(0.9f)
                 ) {
                     DatePicker(
                         state = datePickerState,
-                        showModeToggle = false
+                        showModeToggle = false // Oculta el botón de alternar modos
                     )
                 }
             }
         }
     }
 }
-
 

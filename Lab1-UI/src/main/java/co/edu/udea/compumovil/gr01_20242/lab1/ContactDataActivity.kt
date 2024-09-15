@@ -27,25 +27,21 @@ import retrofit2.http.GET
 
 // --- Retrofit Configuration ---
 
-// Data Classes para la respuesta de Geonames
 data class GeonamesResponse(val geonames: List<Geoname>)
 data class Geoname(val name: String)
 
-// Interfaz de la API de Geonames
 interface GeonamesApiService {
     @GET("searchJSON")
     suspend fun getCities(
         @retrofit2.http.Query("country") country: String = "CO",
-        @retrofit2.http.Query("featureClass") featureClass: String = "P", // P para poblaciones
+        @retrofit2.http.Query("featureClass") featureClass: String = "P",
         @retrofit2.http.Query("maxRows") maxRows: Int = 1000,
-        @retrofit2.http.Query("username") username: String = "daniel22" // Tu nombre de usuario de Geonames
+        @retrofit2.http.Query("username") username: String = "daniel22"
     ): GeonamesResponse
 }
 
-// Objeto singleton para Retrofit
 object RetrofitClient {
     private const val BASE_URL = "https://secure.geonames.org/"
-
     val apiService: GeonamesApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -55,13 +51,12 @@ object RetrofitClient {
     }
 }
 
-// Definición de la actividad ContactDataActivity como clase
 class ContactDataActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                ContactDataScreen() // Llama a la función @Composable que define la UI
+                ContactDataScreen()
             }
         }
     }
@@ -69,31 +64,35 @@ class ContactDataActivity : ComponentActivity() {
 
 @Composable
 fun ContactDataScreen() {
-    // Estado para los campos de entrada
     var phone by rememberSaveable { mutableStateOf("") }
     var address by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var country by rememberSaveable { mutableStateOf("") }
     var city by rememberSaveable { mutableStateOf("") }
+    val fillRequiredFields = stringResource(id = R.string.fill_required_fields) // Mensaje de advertencia
+    val contactData = stringResource(id = R.string.contact_data) // informacion de contacto
+    val log_phone= stringResource(id = R.string.phone_label)// log del phone
+    val log_address=stringResource(id = R.string.address_label) // Log de la dirección
+    val log_email=stringResource(id = R.string.email_label) // Log del email
+    val log_country=stringResource(id = R.string.country_label) // Log del pais
+    val log_city=stringResource(id = R.string.city_label) // Log del la ciudad
 
     val countries = listOf(
         "Argentina", "Bolivia", "Brazil", "Chile", "Colombia",
         "Ecuador", "Paraguay", "Peru", "Uruguay", "Venezuela"
     )
 
-    // Estado para las ciudades obtenidas de la API
     var citiesFromApi by remember { mutableStateOf(listOf<String>()) }
     var isLoading by remember { mutableStateOf(false) }
     var apiError by remember { mutableStateOf<String?>(null) }
 
     val coroutineScope = rememberCoroutineScope()
 
-    // Llamada a la API para obtener ciudades
     LaunchedEffect(Unit) {
         isLoading = true
         try {
             val response = RetrofitClient.apiService.getCities(
-                username = "daniel22" // Reemplaza con tu nombre de usuario de Geonames
+                username = "daniel22"
             )
             citiesFromApi = response.geonames.map { it.name }
             Log.d("ContactData", "Ciudades obtenidas: ${citiesFromApi.size}")
@@ -109,14 +108,14 @@ fun ContactDataScreen() {
             .padding(16.dp)
             .fillMaxWidth()
     ) {
-        Text(text = stringResource(R.string.contact_data_title), style = MaterialTheme.typography.headlineSmall)
+        Text(stringResource(R.string.contact_data_title), style = MaterialTheme.typography.headlineSmall)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         ContactField(
             value = phone,
             onValueChange = { phone = it },
-            label = "Teléfono",
+            label = stringResource(R.string.phone_label),
             icon = painterResource(id = R.drawable.phone_icon),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
             isError = phone.isEmpty()
@@ -127,7 +126,7 @@ fun ContactDataScreen() {
         ContactField(
             value = address,
             onValueChange = { address = it },
-            label = "Dirección",
+            label = stringResource(R.string.address_label),
             icon = painterResource(id = R.drawable.address_icon),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
         )
@@ -137,7 +136,7 @@ fun ContactDataScreen() {
         ContactField(
             value = email,
             onValueChange = { email = it },
-            label = "Correo",
+            label = stringResource(R.string.email_label),
             icon = painterResource(id = R.drawable.email_icon),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
             isError = email.isEmpty()
@@ -145,19 +144,17 @@ fun ContactDataScreen() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Campo de autocompletado para País
         AutoCompleteTextField(
             value = country,
             onValueChange = { country = it },
             suggestions = countries,
-            label = "País",
+            label = stringResource(R.string.country_label),
             icon = painterResource(id = R.drawable.country_icon),
             isError = country.isEmpty()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Campo de autocompletado para Ciudad usando datos de la API
         if (isLoading) {
             CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
         } else if (apiError != null) {
@@ -171,28 +168,25 @@ fun ContactDataScreen() {
                 value = city,
                 onValueChange = { city = it },
                 suggestions = citiesFromApi,
-                label = "Ciudad",
+                label = stringResource(R.string.city_label),
                 icon = painterResource(id = R.drawable.city_icon)
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón para continuar con la validación
         Button(
             onClick = {
                 if (phone.isEmpty() || email.isEmpty() || country.isEmpty()) {
-                    Log.d("ContactData", "Faltan campos por completar")
+                    Log.d("ContactData", fillRequiredFields) // Mensaje de advertencia si los campos están vacíos usando `stringResource()`
                 } else {
-                    Log.d(
-                        "ContactData",
-                        "Información de contacto: Teléfono: $phone, Dirección: $address, Email: $email, País: $country, Ciudad: $city"
-                    )
+                    val logMessage = "$contactData -> $log_phone: $phone, $log_address: $address, $log_email: $email, $log_country: $country, $log_city: $city"
+                    Log.d("contacData", logMessage)
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Siguiente")
+            Text(stringResource(R.string.next_button))
         }
     }
 }
@@ -212,7 +206,7 @@ fun ContactField(
             painter = icon,
             contentDescription = null,
             modifier = Modifier
-                .size(24.dp)
+                .size(50.dp)
                 .padding(end = 8.dp)
         )
         OutlinedTextField(
@@ -245,7 +239,7 @@ fun AutoCompleteTextField(
                 painter = icon,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(50.dp)
                     .padding(end = 8.dp)
             )
             OutlinedTextField(
@@ -287,6 +281,7 @@ fun AutoCompleteTextField(
         }
     }
 }
+
 
 
 
