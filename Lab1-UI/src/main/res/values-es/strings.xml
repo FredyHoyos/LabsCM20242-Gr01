@@ -37,7 +37,8 @@
     <string name="image_schooling">Imagen de escolaridad</string>
     <string name="fill_required_fields">Porfavor llene los campos requeridos</string>
     <string name="personal_information">Información Personal</string>
-    <string name="date_of_birth">Fecha de cumpleaños</string>
+    <string name="date">Fecha</string>
+    <string name="date_text">Fecha de nacimiento:</string>
     <string name="date_of_birth_icon">Icono de fecha de cumpleaños</string>
     <string name="next">Siguiente</string>
     <string name="man">Hombre</string>
