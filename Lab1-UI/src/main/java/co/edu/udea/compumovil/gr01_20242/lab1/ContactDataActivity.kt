@@ -29,7 +29,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 
-// --- Retrofit Configuration ---
+// --- Retrofit Configuration Dor ---
 
 data class GeonamesResponse(val geonames: List<Geoname>)
 data class Geoname(val name: String)
