@@ -25,7 +25,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.edu.udea.compumovil.gr01_20242.lab1.ui.theme.Labs20242Gr01Theme
 import android.content.Intent
+import android.content.res.Configuration
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.ui.window.Dialog
@@ -48,6 +57,18 @@ class PersonalDataActivity : ComponentActivity() {
 
 
 @Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    Labs20242Gr01Theme {
+        Column {
+            Titulo()
+            Cuerpo()
+
+        }
+
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Titulo() {
@@ -61,6 +82,8 @@ fun Titulo() {
 @Preview(showBackground = true)
 @Composable
 fun Cuerpo() {
+    val configuration = LocalConfiguration.current
+
     var name by rememberSaveable { mutableStateOf("") } // Variable para almacenar el nombre
     var last_name by rememberSaveable { mutableStateOf("") } // Variable para almacenar el apellido
     var sex by rememberSaveable { mutableStateOf("Man") } // Variable para almacenar el sexo, valor inicial "Man"
@@ -72,20 +95,16 @@ fun Cuerpo() {
     val log_name= stringResource(id = R.string.name)// Log del nombre
     val log_last_name=stringResource(id = R.string.last_name) // Log del apellido
     val log_sex=stringResource(id = R.string.sex) // Log del sexo
-    val log_date_of_birth=stringResource(id = R.string.date_of_birth) // Log de la fecha de nacimiento
+    val log_date=stringResource(id = R.string.date) // Log de la fecha de nacimiento
     val log_degree=stringResource(id = R.string.degree) // Log del grado académico
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        val isLandscape = maxWidth > maxHeight // Verifica si la orientación es horizontal
 
+
+    if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // Fila para el campo de "Name"
@@ -102,9 +121,136 @@ fun Cuerpo() {
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
                     value = name,
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        autoCorrectEnabled = false,
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
                     onValueChange = { if (it.length < 50) name = it }, // Actualiza el valor del nombre
                     label = { Text(stringResource(id = R.string.name)) }, // Etiqueta del campo usando `stringResource()`
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    isError = name.isEmpty()
+                )
+                Spacer(modifier = Modifier.width(60.dp)) // Espacio de 60dp de ancho
+                Image(
+                    painter = painterResource(id = R.drawable.mas), // Imagen de apellido
+                    contentDescription = stringResource(id = R.string.image_last_name), // Descripción accesible usando `stringResource()`
+                    modifier = Modifier.size(50.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                OutlinedTextField(
+                    value = last_name,
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        autoCorrectEnabled = false,
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    onValueChange = { if (it.length < 50) last_name = it }, // Actualiza el valor del apellido
+                    label = { Text(stringResource(id = R.string.last_name)) }, // Etiqueta del campo usando `stringResource()`
+                    modifier = Modifier.weight(1f),
+                    isError = last_name.isEmpty()
+                )
+            }
+
+            // Fila para la selección de "Sex"
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.dos), // Imagen para el sexo
+                    contentDescription = stringResource(id = R.string.image_sex), // Descripción accesible usando `stringResource()`
+                    modifier = Modifier.size(50.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                SeleccionSexo(onSelectionChange = { selected -> sex = selected }) // Componente para la selección de sexo
+            }
+
+            // Fila para la selección de "Date of Birth"
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.calendario), // Imagen de calendario
+                    contentDescription = stringResource(id = R.string.image_birth), // Descripción accesible usando `stringResource()`
+                    modifier = Modifier.size(50.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp)) // Espacio de 8dp de ancho
+                Text(stringResource(id = R.string.date_text))
+                Spacer(modifier = Modifier.width(20.dp))
+                DatePickerModal(onDateSelected = { date -> select_date = date }) // Componente para seleccionar la fecha de nacimiento
+            }
+
+            // Fila para la selección de "Education Level"
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.gorro), // Imagen de gorro académico
+                    contentDescription = stringResource(id = R.string.image_schooling), // Descripción accesible usando `stringResource()`
+                    modifier = Modifier.size(50.dp)
+                )
+                Spacer(modifier = Modifier.width(30.dp)) // Espacio de 30dp de ancho
+                ListaGrado(onOptionSelected = { option -> selectedOption = option }) // Componente para seleccionar el grado académico
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón "Next" que valida los campos antes de continuar
+            Button(
+                onClick = {
+                    if (name.isEmpty() || last_name.isEmpty() || select_date.isNullOrEmpty()) {
+                        Log.d("Data", fillRequiredFields) // Mensaje de advertencia si los campos están vacíos usando `stringResource()`
+                    } else {
+                        val logMessage = "$personalInformation -> $log_name: $name, $log_last_name: $last_name, $log_sex: $sex, $log_date: $select_date, $log_degree: $selectedOption"
+                        Log.d("Data", logMessage)
+                        val intent = Intent(context, ContactDataActivity::class.java) // Intenta ir a la siguiente actividad
+                        context.startActivity(intent)
+                    }
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(stringResource(id = R.string.next)) // Texto en el botón usando `stringResource()`
+            }
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            // Fila para el campo de "Name"
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.usuario), // Imagen de usuario
+                    contentDescription = stringResource(id = R.string.image_name), // Descripción accesible usando `stringResource()`
+                    modifier = Modifier.size(50.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                OutlinedTextField(
+                    value = name,
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        autoCorrectEnabled = false,
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    onValueChange = { if (it.length < 50) name = it }, // Actualiza el valor del nombre
+                    label = { Text(stringResource(id = R.string.name)) }, // Etiqueta del campo usando `stringResource()`
+                    modifier = Modifier.weight(1f),
+                    isError = name.isEmpty()
                 )
             }
 
@@ -122,9 +268,16 @@ fun Cuerpo() {
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
                     value = last_name,
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        autoCorrectEnabled = false,
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
                     onValueChange = { if (it.length < 50) last_name = it }, // Actualiza el valor del apellido
                     label = { Text(stringResource(id = R.string.last_name)) }, // Etiqueta del campo usando `stringResource()`
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    isError = last_name.isEmpty()
                 )
             }
 
@@ -145,8 +298,6 @@ fun Cuerpo() {
 
             // Fila para la selección de "Date of Birth"
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(0.8f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -154,6 +305,8 @@ fun Cuerpo() {
                     contentDescription = stringResource(id = R.string.image_birth), // Descripción accesible usando `stringResource()`
                     modifier = Modifier.size(50.dp)
                 )
+                Spacer(modifier = Modifier.width(8.dp)) // Espacio de 8dp de ancho
+                Text(stringResource(id = R.string.date_text))
                 Spacer(modifier = Modifier.width(8.dp))
                 DatePickerModal(onDateSelected = { date -> select_date = date }) // Componente para seleccionar la fecha de nacimiento
             }
@@ -169,7 +322,7 @@ fun Cuerpo() {
                     contentDescription = stringResource(id = R.string.image_schooling), // Descripción accesible usando `stringResource()`
                     modifier = Modifier.size(50.dp)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(30.dp)) // Espacio de 30dp de ancho
                 ListaGrado(onOptionSelected = { option -> selectedOption = option }) // Componente para seleccionar el grado académico
             }
 
@@ -181,7 +334,7 @@ fun Cuerpo() {
                     if (name.isEmpty() || last_name.isEmpty() || select_date.isNullOrEmpty()) {
                         Log.d("Data", fillRequiredFields) // Mensaje de advertencia si los campos están vacíos usando `stringResource()`
                     } else {
-                        val logMessage = "$personalInformation -> $log_name: $name, $log_last_name: $last_name, $log_sex: $sex, $log_date_of_birth: $select_date, $log_degree: $selectedOption"
+                        val logMessage = "$personalInformation -> $log_name: $name, $log_last_name: $last_name, $log_sex: $sex, $log_date: $select_date, $log_degree: $selectedOption"
                         Log.d("Data", logMessage)
                         val intent = Intent(context, ContactDataActivity::class.java) // Intenta ir a la siguiente actividad
                         context.startActivity(intent)
@@ -193,6 +346,7 @@ fun Cuerpo() {
             }
         }
     }
+
 }
 
 
@@ -250,7 +404,8 @@ fun ListaGrado(
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
-        modifier = modifier.fillMaxWidth(0.8f)
+        modifier = Modifier.requiredWidth(250.dp) // Ancho mínimo de 150dp
+
     ) {
         TextField(
             readOnly = true,
@@ -299,7 +454,7 @@ fun DatePickerModal(
     val datePickerState = rememberDatePickerState() // Estado del DatePicker
     val formatter = rememberSaveable {
         SimpleDateFormat(
-            "MM/dd/yyyy",
+            "dd/MM/yyyy",
             Locale.getDefault()
         )
     } // Formato de la fecha
@@ -318,15 +473,13 @@ fun DatePickerModal(
         }
     }
 
-    Box(
-        modifier = modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
+    Box{
         OutlinedTextField(
             value = selectedDate, // Muestra la fecha seleccionada
             onValueChange = { },
-            label = { Text(stringResource(id = R.string.date_of_birth)) }, // Etiqueta del campo usando `stringResource()`
+            label = { Text(stringResource(id = R.string.date)) }, // Etiqueta del campo usando `stringResource()`
             readOnly = true,
+            isError = selectedDate.isEmpty(),
             trailingIcon = {
                 IconButton(onClick = { showDialog.value = true }) {
                     Icon(
@@ -335,20 +488,26 @@ fun DatePickerModal(
                     )
                 }
             },
-            modifier = Modifier.fillMaxWidth(0.8f)
+            modifier = Modifier
+                .width(160.dp)
+                .height(60.dp)
         )
         if (showDialog.value) {
             Dialog(onDismissRequest = { showDialog.value = false }) {
                 Box(
                     modifier = Modifier
                         .background(MaterialTheme.colorScheme.surface)
-                        .padding(16.dp)
-                        .fillMaxWidth(0.9f)
+                        .fillMaxWidth(1f)
                 ) {
-                    DatePicker(
-                        state = datePickerState,
-                        showModeToggle = false // Oculta el botón de alternar modos
-                    )
+                    Column(
+                        modifier = Modifier.verticalScroll(rememberScrollState())
+                    ) {
+                        DatePicker(
+                            state = datePickerState,
+                            showModeToggle = false // Oculta el botón de alternar modos
+                        )
+                    }
+
                 }
             }
         }
