@@ -30,7 +30,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.ui.window.Dialog
 
-
 class PersonalDataActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +45,6 @@ class PersonalDataActivity : ComponentActivity() {
     }
 }
 
-
-@Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Titulo() {
@@ -58,7 +55,6 @@ fun Titulo() {
     )
 }
 
-@Preview(showBackground = true)
 @Composable
 fun Cuerpo() {
     var name by rememberSaveable { mutableStateOf("") } // Variable para almacenar el nombre
@@ -195,7 +191,6 @@ fun Cuerpo() {
     }
 }
 
-
 @Composable
 fun SeleccionSexo(
     modifier: Modifier = Modifier,
@@ -230,7 +225,6 @@ fun SeleccionSexo(
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -283,8 +277,6 @@ fun ListaGrado(
         }
     }
 }
-
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
