@@ -1,5 +1,6 @@
 package co.edu.udea.compumovil.gr01_20242.lab1
 
+import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings.Global.getString
 import android.util.Log
@@ -14,7 +15,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -58,25 +61,21 @@ object RetrofitClient {
 class ContactDataActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val logMessage = intent.getStringExtra("logMessage") // Obtener el mensaje de registro del intent
         setContent {
             MaterialTheme {
-                ContactDataScreen()
+                if (logMessage != null) {
+                    ContactDataScreen(intent = intent, logMessagePersonal = logMessage)
+                }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview1() {
-    Labs20242Gr01Theme {
-        ContactDataScreen()
-
-    }
-}
 
 @Composable
-fun ContactDataScreen() {
+fun ContactDataScreen(intent: Intent, logMessagePersonal: String) {
+    val messageFromIntent = intent.getStringExtra("logMessagePersonal")
     var phone by rememberSaveable { mutableStateOf("") }
     var address by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -189,19 +188,77 @@ fun ContactDataScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        var showDialog by remember { mutableStateOf(false) }
+        var logMessage by remember { mutableStateOf("") }
+
         Button(
             onClick = {
                 if (phone.isEmpty() || email.isEmpty() || country.isEmpty()) {
-                    Log.d("ContactData", fillRequiredFields) // Mensaje de advertencia si los campos están vacíos usando `stringResource()`
+                    Log.d("ContactData", fillRequiredFields) // Mensaje de advertencia si los campos están vacíos
                 } else {
-                    val logMessage = "$contactData -> $log_phone: $phone, $log_address: $address, $log_email: $email, $log_country: $country, $log_city: $city"
-                    Log.d("contacData", logMessage)
+                    // Construye el mensaje de registro
+                    logMessage = "\n$contactData \n $log_phone: $phone, \n$log_address: $address, \n$log_email: $email, \n$log_country: $country, \n$log_city: $city"
+                    Log.d("ContactData", logMessage)
+
+                    if (messageFromIntent != null) {
+                        Log.d("Data", messageFromIntent)
+                    }
+                    Log.d("Data", logMessagePersonal)
+
+                    // Muestra el diálogo
+                    showDialog = true
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.next_button))
         }
+
+        // AlertDialog
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text("Información") },
+                text = { Text(logMessagePersonal+logMessage) }, // Muestra el logMessage en el diálogo
+                confirmButton = {
+                    Button(onClick = {
+                        // Acción al confirmar
+                        showDialog = false
+                        // Aquí puedes agregar la lógica adicional que necesites al confirmar
+                    }) {
+                        Text("Cerrar")
+                    }
+                }/*,
+                dismissButton = {
+                    Button(onClick = {
+                        // Acción al cancelar
+                        showDialog = false
+                    }) {
+                        Text("Cancelar")
+                    }
+                }*/
+            )
+        }
+    }
+}
+
+@Composable
+fun MyAlertDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    message: String
+) {
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text("Título") },
+            text = { Text(message) },
+            confirmButton = {
+                Button(onClick = onDismiss) {
+                    Text("Aceptar")
+                }
+            }
+        )
     }
 }
 
