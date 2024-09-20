@@ -208,14 +208,14 @@ fun Cuerpo() {
                     if (name.isEmpty() || last_name.isEmpty() || select_date.isNullOrEmpty()) {
                         Log.d("Data", fillRequiredFields) // Mensaje de advertencia si los campos están vacíos usando `stringResource()`
                     } else {
-                        val logMessage = "$personalInformation \n $log_name: $name, \n$log_last_name: $last_name, \n$log_sex: $sex, $log_date: \n$select_date, $log_degree: $selectedOption\n"
+                        val logMessage = "$personalInformation -> $log_name: $name, $log_last_name: $last_name, $log_sex: $sex, $log_date: $select_date, $log_degree: $selectedOption"
                         Log.d("Data", logMessage)
                         val intent = Intent(context, ContactDataActivity::class.java) // Intenta ir a la siguiente actividad
+                        intent.putExtra("logMessage", logMessage) // Pasa el mensaje de registro a la siguiente actividad
                         context.startActivity(intent)
                     }
                 },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
+                modifier = Modifier.align(Alignment.CenterHorizontally)) {
                 Text(stringResource(id = R.string.next)) // Texto en el botón usando `stringResource()`
             }
         }
