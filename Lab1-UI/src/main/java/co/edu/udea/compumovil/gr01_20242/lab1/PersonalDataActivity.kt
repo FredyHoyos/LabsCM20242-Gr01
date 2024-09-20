@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.ui.window.Dialog
 
+
 class PersonalDataActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +78,7 @@ fun Titulo() {
     )
 }
 
+@Preview(showBackground = true)
 @Composable
 fun Cuerpo() {
     val configuration = LocalConfiguration.current
@@ -346,6 +348,7 @@ fun Cuerpo() {
 
 }
 
+
 @Composable
 fun SeleccionSexo(
     modifier: Modifier = Modifier,
@@ -380,6 +383,7 @@ fun SeleccionSexo(
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -433,6 +437,8 @@ fun ListaGrado(
         }
     }
 }
+
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
