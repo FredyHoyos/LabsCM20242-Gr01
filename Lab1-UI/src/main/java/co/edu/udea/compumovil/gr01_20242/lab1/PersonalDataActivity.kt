@@ -208,7 +208,7 @@ fun Cuerpo() {
                     if (name.isEmpty() || last_name.isEmpty() || select_date.isNullOrEmpty()) {
                         Log.d("Data", fillRequiredFields) // Mensaje de advertencia si los campos están vacíos usando `stringResource()`
                     } else {
-                        val logMessage = "$personalInformation -> $log_name: $name, $log_last_name: $last_name, $log_sex: $sex, $log_date: $select_date, $log_degree: $selectedOption"
+                        val logMessage = "$personalInformation \n $log_name: $name, \n$log_last_name: $last_name, \n$log_sex: $sex, \n$log_date: $select_date, \n$log_degree: $selectedOption"
                         Log.d("Data", logMessage)
                         val intent = Intent(context, ContactDataActivity::class.java) // Intenta ir a la siguiente actividad
                         intent.putExtra("logMessage", logMessage) // Pasa el mensaje de registro a la siguiente actividad
@@ -242,9 +242,9 @@ fun Cuerpo() {
                     value = name,
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Sentences,
-                        autoCorrectEnabled = false,
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Done,
+                        autoCorrectEnabled = false
                     ),
                     onValueChange = { if (it.length < 50) name = it }, // Actualiza el valor del nombre
                     label = { Text(stringResource(id = R.string.name)) }, // Etiqueta del campo usando `stringResource()`
@@ -333,7 +333,7 @@ fun Cuerpo() {
                     if (name.isEmpty() || last_name.isEmpty() || select_date.isNullOrEmpty()) {
                         Log.d("Data", fillRequiredFields) // Mensaje de advertencia si los campos están vacíos usando `stringResource()`
                     } else {
-                        val logMessage = "$personalInformation -> $log_name: $name, $log_last_name: $last_name, $log_sex: $sex, $log_date: $select_date, $log_degree: $selectedOption"
+                        val logMessage = "$personalInformation\n$log_name: $name, \n$log_last_name: $last_name, \n$log_sex: $sex, \n$log_date: $select_date, \n$log_degree: $selectedOption"
                         Log.d("Data", logMessage)
                         val intent = Intent(context, ContactDataActivity::class.java) // Intenta ir a la siguiente actividad
                         intent.putExtra("logMessage", logMessage) // Pasa el mensaje de registro a la siguiente actividad
