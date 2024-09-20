@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import co.edu.udea.compumovil.gr01_20242.lab1.ui.theme.Labs20242Gr01Theme
 import android.content.Intent
 import android.content.res.Configuration
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
