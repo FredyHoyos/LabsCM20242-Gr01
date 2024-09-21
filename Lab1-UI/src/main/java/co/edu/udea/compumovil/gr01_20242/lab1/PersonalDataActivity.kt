@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import co.edu.udea.compumovil.gr01_20242.lab1.ui.theme.Labs20242Gr01Theme
 import android.content.Intent
 import android.content.res.Configuration
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -209,14 +208,14 @@ fun Cuerpo() {
                     if (name.isEmpty() || last_name.isEmpty() || select_date.isNullOrEmpty()) {
                         Log.d("Data", fillRequiredFields) // Mensaje de advertencia si los campos están vacíos usando `stringResource()`
                     } else {
-                        val logMessage = "$personalInformation -> $log_name: $name, $log_last_name: $last_name, $log_sex: $sex, $log_date: $select_date, $log_degree: $selectedOption"
+                        val logMessage = "$personalInformation \n $log_name: $name, \n$log_last_name: $last_name, \n$log_sex: $sex, \n$log_date: $select_date, \n$log_degree: $selectedOption"
                         Log.d("Data", logMessage)
                         val intent = Intent(context, ContactDataActivity::class.java) // Intenta ir a la siguiente actividad
+                        intent.putExtra("logMessage", logMessage) // Pasa el mensaje de registro a la siguiente actividad
                         context.startActivity(intent)
                     }
                 },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
+                modifier = Modifier.align(Alignment.CenterHorizontally)) {
                 Text(stringResource(id = R.string.next)) // Texto en el botón usando `stringResource()`
             }
         }
@@ -230,22 +229,22 @@ fun Cuerpo() {
             // Fila para el campo de "Name"
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(0.8f),
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.usuario), // Imagen de usuario
                     contentDescription = stringResource(id = R.string.image_name), // Descripción accesible usando `stringResource()`
-                    modifier = Modifier.size(50.dp)
+                    modifier = Modifier.size(50.dp).fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
                     value = name,
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Sentences,
-                        autoCorrectEnabled = false,
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Done,
+                        autoCorrectEnabled = false
                     ),
                     onValueChange = { if (it.length < 50) name = it }, // Actualiza el valor del nombre
                     label = { Text(stringResource(id = R.string.name)) }, // Etiqueta del campo usando `stringResource()`
@@ -257,7 +256,7 @@ fun Cuerpo() {
             // Fila para el campo de "Last Name"
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(0.8f),
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -334,9 +333,10 @@ fun Cuerpo() {
                     if (name.isEmpty() || last_name.isEmpty() || select_date.isNullOrEmpty()) {
                         Log.d("Data", fillRequiredFields) // Mensaje de advertencia si los campos están vacíos usando `stringResource()`
                     } else {
-                        val logMessage = "$personalInformation -> $log_name: $name, $log_last_name: $last_name, $log_sex: $sex, $log_date: $select_date, $log_degree: $selectedOption"
+                        val logMessage = "$personalInformation\n$log_name: $name, \n$log_last_name: $last_name, \n$log_sex: $sex, \n$log_date: $select_date, \n$log_degree: $selectedOption"
                         Log.d("Data", logMessage)
                         val intent = Intent(context, ContactDataActivity::class.java) // Intenta ir a la siguiente actividad
+                        intent.putExtra("logMessage", logMessage) // Pasa el mensaje de registro a la siguiente actividad
                         context.startActivity(intent)
                     }
                 },
@@ -357,7 +357,7 @@ fun SeleccionSexo(
 ) {
     // Lista de opciones de sexo
     val opcionesSexo = listOf(stringResource(id = R.string.man), stringResource(id = R.string.woman)) // Texto de opciones usando `stringResource()`
-    var seleccion by rememberSaveable { mutableStateOf(opcionesSexo.first()) } // Opción seleccionada inicialmente "Man"
+    var seleccion by rememberSaveable(key = "sexo") { mutableStateOf(opcionesSexo.first()) } // Opción seleccionada inicialmente "Man"
 
     Row(
         modifier = modifier,
@@ -399,7 +399,7 @@ fun ListaGrado(
         stringResource(id = R.string.other)
     )
     var expanded by rememberSaveable { mutableStateOf(false) }
-    var selectedOption by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedOption by rememberSaveable(key = "seleccion") { mutableStateOf<String?>(null) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -449,9 +449,10 @@ fun DatePickerModal(
     onDateSelected: (String) -> Unit
 ) {
     // Modal para seleccionar la fecha de nacimiento usando un DatePicker
-    val showDialog =
-        rememberSaveable { mutableStateOf(false) } // Controla si el diálogo está visible
-    val datePickerState = rememberDatePickerState() // Estado del DatePicker
+    var showDialog =
+        rememberSaveable{ mutableStateOf(false) } // Controla si el diálogo está visible
+    val selectedDateMillis = rememberSaveable(key = "selectedDateMillis") { mutableStateOf<Long?>(null) } // Almacena la fecha seleccionada en milisegundos
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis.value) // Estado del DatePicker
     val formatter = rememberSaveable {
         SimpleDateFormat(
             "dd/MM/yyyy",
@@ -464,6 +465,7 @@ fun DatePickerModal(
     } ?: ""
 
     LaunchedEffect(datePickerState.selectedDateMillis) {
+        selectedDateMillis.value = datePickerState.selectedDateMillis // Actualiza el valor de selectedDateMillis cuando se selecciona una nueva fecha
         val newDate = datePickerState.selectedDateMillis?.let {
             formatter.format(Date(it)) // Actualiza la fecha cuando el usuario selecciona una nueva fecha
         } ?: ""
