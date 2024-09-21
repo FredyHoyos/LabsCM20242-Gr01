@@ -197,7 +197,7 @@ fun ContactDataScreen(intent: Intent, logMessagePersonal: String) {
                     Log.d("ContactData", fillRequiredFields) // Mensaje de advertencia si los campos están vacíos
                 } else {
                     // Construye el mensaje de registro
-                    logMessage = "\n$contactData \n $log_phone: $phone, \n$log_address: $address, \n$log_email: $email, \n$log_country: $country, \n$log_city: $city"
+                    logMessage = "\n$contactData \n$log_phone: $phone, \n$log_address: $address, \n$log_email: $email, \n$log_country: $country, \n$log_city: $city"
                     Log.d("ContactData", logMessage)
 
                     if (messageFromIntent != null) {
